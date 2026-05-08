@@ -1,161 +1,41 @@
-# Objective
+## Data Source
 
-Turn a binary classifier (**XG Boost**) to predict diabetes into a Machine Learning solution
+1. Training set- CDC BRFSS
+2. Synthea- live stream of data for real time production
 
-Dataset source: [Diabetes Dataset on Kaggle](https://www.kaggle.com/datasets/mathchi/diabetes-data-set)
+## Project Structure
 
-# Architecting the solution
-
-The solution is intended to use a Machine Learning model to power a web application and is architected in two stages - i) model pipeline, ii) integrating into a website
-
-![](img/Architecture.png)
-
-<h4 style="text-align: center;">Figure1: Solution architecture</h4>
-
-## Model pipeline
-A three task strategy
-
-<h4 style="text-align: center;">Table1: model deployment pipeline</h4>
-
-| S. No. | Task | Purpose | Tech |
-| ------ | ---- | ------- | ---- |
-| 1 | API | Model processes a request and sends a response | FastAPI |
-| 2 | Containerization | wrapper that captures all dependencies | Docker |
-| 3 | Deployment | run the container over a server or cloud provider | AWS ECS |
-
-Steps associated with the model deployment pipeline:
-
-1. Create RestAPI to recieve parameters and return the predictions
-2. Containerize the API into a [Docker image](https://fastapi.tiangolo.com/deployment/docker/) and push to Docker hub
-3. Deploy the container on AWS ECS and expose an endpoint
-
-### Executing FastAPI
-
-API details
-
-1. method: POST
-2. endpoint: `/inputs`
-3. body: glucose (float), insulin (float), bmi (float), age (int)
-4. response: dict {"status": "diabetic/undiabetic"}
-
-Follow the steps below to create and execute the RestAPI on your local server and the [Postman Desktop Client](https://learning.postman.com/docs/getting-started/first-steps/get-postman/). 
-
-1. `cd app`
-2. `pip install -r requirements.txt`
-3. `python3 -m uvicorn main:app --host 127.0.0.1 --port 8001 --reload`
-
-<div align="center">
-
-![](img/apiExecution.png)
-
-</div>
-
-<h4 style="text-align: center;">Figure2: API execution results</h4>
-
-4. exit Uvicorn server once everything is working and build Docker image
-    
-    a. `cd ..`
-    
-    b. `docker build -t <image_name> .`
-
-5. run the docker image, `docker run -d --name <container_name> -p 80:80 <image_name>`
-
-6. create a repository on [docker hub](https://hub.docker.com) and push the image
-
-    a. `docker tag <image_name> <repository-name>`
-
-    b. `docker push <repository-name>`
-
-<div align="center">
-
-![](img/DockerHub.png)
-
-</div>
-
-<h4 style="text-align: center;">Figure3: push container to DockerHub</h4>
-
-7. query the endpoint on Postman
-
-<div align="center">
-
-![](img/apiExecution_Docker.png)
-
-</div>
-
-<h4 style="text-align: center;">Figure4: executing Docker image endpoint on Postman</h4>
-
-<div align="center">
-
-![](img/DockerExec.png)
-
-</div>
-
-<h4 style="text-align: center;">Figure5: Docker image execution status</h4>
-
-### Deployment
-
-Deploy Docker container on Elastic Container Service.
-
-Step1: Create `Task definitions`
-
-a. general configurations
-
-<h4 style="text-align: center;">Table2: Task definition configuration</h4>
-
-| Option | Chosen value | Reason |
-| ------ | ------------ | ------ |
-| Launch Type | AWS Fargate | serverless |
-| OS | Linux | see figure3 |
-| Architecture | ARM64 | choose for the OS of your local system, in my case MAC |
-| Task size | 1 CPU@2GB | executes smoothly on a lower memory size |
-| Task role | None | first time leave it None |
-
-b. Container details
-
-Update only the following fields:
-
-1. **Name**- any name
-2. **Image URI**- `singhdivyank7/xgbc-practice-aws:latest` (from DockerHub)
-3. **Essential Container**- Yes
-
-Step2: `Create cluster`. Assign any name and choose AWS Fargate infrastructure
-
-Step3: Create `Services`
-
-1. Do not change existing cluster name
-2. **Launch type**- AWS Fargate
-3. **Application type**- service
-4. **Service name**- any name
-
-Once created copy the `Public IP` and replace it in line15, `script.js`
-
-## Website Integration
-
-Create a simple website in JavaScript fetauring a submit button to receive 4 inputs (**features**). Integrate the `fetch` function to send a POST request at the endpoint hosted on ECS.
-
-```
-apiUrl = <url for aws ecs cluster>
-const response = await fetch(apiUrl, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-        glucose: float(input1),
-        insulin: float(input2),
-        bmi: float(input3),
-        age: int(input4)
-    })
-})
-```
-
-**Note**: to execute POST requests with FastAPI enable CORSMiddleware
-
-### On a side note: an alternate approach
-
-Creating a website in JavaScript and integrating the ML classifier can be avoided by using **no-code** alternatives such as [Gradio](https://www.gradio.app). As a no-code platform it creates an API to access the model from an iteractive UI. This allows one to access the model directly as a pickle file which helps avoid both containerization and deployment.
-
-This implementation can be found in `gradio.py`. Steps to execute on Gradio
-
-1. `pip install gradio==3.36.1`
-2. `python3 gradio.py`
-
-**Note**: FastAPI is a Gradio dependency. An error may arise due to version conflict between both of them. Just search for the correct versions and install them.
+Sweet-Sense-AI/
+├── terraform/ # IaC: Kafka Topics, Vertex Endpoints, BQ Datasets
+│ ├── main.tf
+│ ├── kafka.tf
+│ └── vertex.tf
+├── data/ # Data exploration & validation
+│ ├── schemas/ # Protobuf or Avro definitions for Kafka messages
+│ │ └── patient_event.proto
+│ └── notebooks/ # Initial XGBoost training & SHAP analysis
+├── model/ # Model training & serialization
+│ ├── train.py # Script to train and upload model to Vertex AI
+│ └── explanation_metadata.json
+├── stream_processor/ # Faust / Kafka Streams logic
+│ ├── app.py # Main streaming worker
+│ ├── feature_eng.py # Real-time feature calculation
+│ └── Dockerfile
+├── services/
+│ ├── backend/ # FastAPI: Serves UI & connects to Kafka
+│ │ ├── api/
+│ │ ├── core/ # Kafka Consumer logic
+│ │ └── main.py
+│ └── frontend/ # React + TypeScript Dashboard
+│ │ ├── src/
+│ │ | ├── components/ # SHAP Chart, Risk Feed, Patient Card
+│ │ │ └── hooks/ # useWebSocket for live data
+├── simulator/ # Script to simulate 10+ concurrent users/patients
+│ └── producer.py # Produces data to Kafka
+├── .github/
+│ ├── workflows/ # CI/CD for Docker builds and Terraform
+│ │ ├── ci.yml
+│ │ └── deployment.yml
+├── .gitignore
+├── docker-compose.yml # For local development (Kafka + Zookeeper)
+└── README.md # Architecture diagrams and setup instructions
