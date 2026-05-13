@@ -1,3 +1,5 @@
+![](./imgs/system_design.png)
+
 ## Data Source
 
 1. Training set- CDC BRFSS
@@ -5,8 +7,10 @@
 
 ## Project Structure
 
+```
 Sweet-Sense-AI/
-├── terraform/ # IaC: Kafka Topics, Vertex Endpoints, BQ Datasets
+├── infra/ # IaC: Kafka Topics, Vertex Endpoints, BQ Datasets
+│ ├── bigquery.tf
 │ ├── main.tf
 │ ├── kafka.tf
 │ └── vertex.tf
@@ -16,6 +20,7 @@ Sweet-Sense-AI/
 │ └── notebooks/ # Initial XGBoost training & SHAP analysis
 ├── model/ # Model training & serialization
 │ ├── train.py # Script to train and upload model to Vertex AI
+│ ├── explanation_parameters.json
 │ └── explanation_metadata.json
 ├── stream_processor/ # Faust / Kafka Streams logic
 │ ├── app.py # Main streaming worker
@@ -39,3 +44,4 @@ Sweet-Sense-AI/
 ├── .gitignore
 ├── docker-compose.yml # For local development (Kafka + Zookeeper)
 └── README.md # Architecture diagrams and setup instructions
+```

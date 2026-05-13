@@ -1,0 +1,119 @@
+{
+  "inputs": {
+    "BMI": {
+      "inputTensorName": "BMI",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "_RFBMI5": {
+      "inputTensorName": "_RFBMI5",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "HighBP": {
+      "inputTensorName": "HighBP",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "HighChol": {
+      "inputTensorName": "HighChol",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "CholCheck": {
+      "inputTensorName": "CholCheck",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "CHCKIDNY": {
+      "inputTensorName": "CHCKIDNY",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "Smoker": {
+      "inputTensorName": "Smoker",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "HvyAlcoholConsump": {
+      "inputTensorName": "HvyAlcoholConsump",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "Stroke": {
+      "inputTensorName": "Stroke",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "HeartDiseaseorAttack": {
+      "inputTensorName": "HeartDiseaseorAttack",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "PhysActivity": {
+      "inputTensorName": "PhysActivity",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "Fruits": {
+      "inputTensorName": "Fruits",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "Veggies": {
+      "inputTensorName": "Veggies",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "GenHlth": {
+      "inputTensorName": "GenHlth",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "PhysHlth": {
+      "inputTensorName": "PhysHlth",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "MentHlth": {
+      "inputTensorName": "MentHlth",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "DiffWalk": {
+      "inputTensorName": "DiffWalk",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "AnyHealthcare": {
+      "inputTensorName": "AnyHealthcare",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "NoDocbcCost": {
+      "inputTensorName": "NoDocbcCost",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "CHECKUP1": {
+      "inputTensorName": "CHECKUP1",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "Sex": {
+      "inputTensorName": "Sex",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    },
+    "Age": {
+      "inputTensorName": "Age",
+      "encoding": "BAG_OF_FEATURES",
+      "modality": "numeric"
+    }
+  },
+  "outputs": {
+    "prediction": {
+      "outputTensorName": "prediction"
+    }
+  }
+}
