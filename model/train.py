@@ -87,9 +87,9 @@ class TrainModel:
         """
 
         try:
-            if self.X_train is None and self.y_train is None:
+            if self.X_train is None or self.y_train is None:
                 self.logger.error("No training set found ... Exiting")
-                raise
+                raise ValueError("Training set not loaded")
 
             sample_weight = compute_sample_weight(
                 class_weight="balanced", y=self.y_train
@@ -171,3 +171,4 @@ class TrainModel:
             self.evaluate_model(t1=best_t1, t2=best_t2)
         except Exception as e:
             self.logger.error("Error in model training: %s", str(e))
+            raise

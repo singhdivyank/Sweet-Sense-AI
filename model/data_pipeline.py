@@ -44,17 +44,23 @@ class DataPrep:
     def __init__(self) -> None:
         self.logger = get_logger(__name__)
         self.settings = get_settings()
+        self._connected = False
         self._connect()
         self.splits: dict[str, pd.DataFrame] = {}
 
     def _connect(self):
-        """Connect to BigQuery"""
+        """Authenticate and create BigQuery client"""
         try:
             credentials = service_account.Credentials.from_service_account_file(
                 str(self.settings.gcp_service_account), scopes=self.settings.gcp_scopes
             )
             self.client = bigquery.Client(
                 project=self.settings.gcp_project, credentials=credentials
+            )
+            self._connected = True
+            self.logger.info(
+                "BigQuery client initialised for project '%s'",
+                self.settings.gcp_project,
             )
         except FileNotFoundError as e:
             self.logger.error("Service account file not found: %s", str(e))
@@ -72,11 +78,11 @@ class DataPrep:
     def fetch_data(self) -> None:
         """Execute the split query and return a single DataFrame with a `split` column."""
 
-        if not self.client:
-            self.logger.info("Could not initialise BigQuery service account")
-            return None
+        if not self._connected:
+            self.logger.error("BigQuery client not initialised — cannot fetch data")
+            return
 
-        cols_to_drop = ",".join(col_name for col_name in DROP_COLS)
+        cols_to_drop = ", ".join(col_name for col_name in DROP_COLS)
         table_id = f"{self.settings.gcp_project}.{self.settings.bq_dataset}.{self.settings.bq_table}"
 
         self.logger.info("Running BigQuery split query on `%s` ...", table_id)
@@ -94,7 +100,7 @@ class DataPrep:
 
     def split_and_save(self):
         """Separate the DataFrame by the `split` column and write Parquet files."""
-        
+
         df = self.df.copy()
 
         for name in ("train", "val", "test"):
