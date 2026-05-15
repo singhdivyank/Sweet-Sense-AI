@@ -1,0 +1,14 @@
+environment              = "dev"
+region                   = "REPLACE_ME"
+gcp_project              = "REPLACE_ME"
+gcp_service_account_path = "REPLACE_ME"
+model_version            = "REPLACE_ME"
+model_bucket             = "REPLACE_ME"
+local_artefact_dir       = "REPLACE_ME"
+vertex_machine_type      = "REPLACE_ME"
+vertex_min_replicas      = REPLACE_ME
+vertex_max_replicas      = REPLACE_ME
+confluent_api_key        = "REPLACE_ME"
+confluent_api_secret     = "REPLACE_ME"
+kafka_partitions         = REPLACE_ME
+kafka_retention_ms       = REPLACE_ME

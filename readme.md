@@ -11,8 +11,11 @@
 Sweet-Sense-AI/
 ├── infra/ # IaC: Kafka Topics, Vertex Endpoints, BQ Datasets
 │ ├── bigquery.tf
+│ ├── envs_dev.tfvars
+│ ├── envs_prod.tfvars
 │ ├── main.tf
 │ ├── kafka.tf
+│ ├── variables.tf
 │ └── vertex.tf
 ├── data/ # Data exploration & validation
 │ ├── schemas/ # Protobuf or Avro definitions for Kafka messages

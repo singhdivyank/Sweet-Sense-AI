@@ -46,9 +46,16 @@ Thumbs.db
 *.log
 logs/
 
+# env
+*.env
+
 # Jupyter
 .ipynb_checkpoints/
 
 dataset/
+./splits
+prepared_model*.json
 
-prepared_model.json
+*.tfvars
+*.tfvars.json
+secrets/
